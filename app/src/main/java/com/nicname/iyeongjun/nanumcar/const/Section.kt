@@ -1,6 +1,7 @@
 package com.nicname.iyeongjun.dobike.const
 
 import com.google.gson.Gson
+import com.nicname.iyeongjun.dobike.api.model.section.SectionModel
 
 
 val sectionJson = """
@@ -136,4 +137,4 @@ val sectionJson = """
 """.trimIndent()
 
 
-//val sections = Gson().fromJson(sectionJson,SectionModel::class.java)
+val sections = Gson().fromJson(sectionJson, SectionModel::class.java)

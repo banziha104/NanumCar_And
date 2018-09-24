@@ -10,6 +10,8 @@ import com.nicname.iyeongjun.dobike.util.PermissionController
 import com.nicname.iyeongjun.gwangju_contest.extension.plusAssign
 import com.nicname.iyeongjun.gwangju_contest.rx.AutoClearedDisposable
 import com.nicname.iyeongjun.nanumcar.R
+import com.nicname.iyeongjun.nanumcar.api.model.branch.BranchModel
+import com.nicname.iyeongjun.nanumcar.api.model.car.CarModel
 import com.nicname.iyeongjun.nanumcar.api.model.notice.NoticeModel
 import com.nicname.iyeongjun.nanumcar.api.model.park.ParkModel
 import com.nicname.iyeongjun.nanumcar.api.model.theme.ThemeModel
@@ -43,15 +45,22 @@ class SplashActivity : DaggerAppCompatActivity() , PermissionController.CallBack
         lifecycle += viewDisposables
         viewModel = ViewModelProviders.of(this, viewModelFactory)[SplashViewModel::class.java]
 
-
+        info { "start" }
         disposable += Observables.combineLatest(
                 viewModel.noticeApi.getNotice(),
                 viewModel.parkApi.getPark(),
-                viewModel.themeApi.getTheme()
-        ){ a1,a2,a3 -> arrayOf(a1,a2,a3) }.subscribe({
-            viewModel.driver.noticeDriver.onNext(it[0] as NoticeModel)
-            viewModel.driver.parkDriver.onNext(it[1] as ParkModel)
-            viewModel.driver.themeDriver.onNext(it[2] as ThemeModel)
+                viewModel.themeApi.getTheme(),
+                viewModel.carApi.getCarList(),
+                viewModel.branchApi.getBranchList()
+        ){ a1,a2,a3,a4,a5 -> arrayOf(a1,a2,a3,a4,a5) }.subscribe({
+            info { it }
+            viewModel.driver.apply {
+                noticeDriver.onNext(it[0] as NoticeModel)
+                parkDriver.onNext(it[1] as ParkModel)
+                themeDriver.onNext(it[2] as ThemeModel)
+                carDriver.onNext(it[3] as CarModel)
+                branchDriver.onNext(it[4] as BranchModel)
+            }
             startActivity<MainActivity>()
         },{
             it.printStackTrace()
