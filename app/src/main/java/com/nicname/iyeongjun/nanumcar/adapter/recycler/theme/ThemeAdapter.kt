@@ -1,6 +1,7 @@
 package com.nicname.iyeongjun.nanumcar.adapter.recycler.theme
 
 import android.content.Context
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -28,7 +29,8 @@ class ThemeAdapter(themeModel: ThemeModel ,val context : Context) : RecyclerView
                 txtTitle.text = it
             }
             items?.values?.toList()!![position].let {
-
+                recyclerView.adapter = ThemeDetailAdapter(it,context)
+                recyclerView.layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
             }
         }
     }

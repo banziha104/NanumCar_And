@@ -1,6 +1,7 @@
 package com.nicname.iyeongjun.nanumcar.adapter.recycler.theme
 
 import android.content.Context
+import android.graphics.Color
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -8,10 +9,12 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.nicname.iyeongjun.nanumcar.R
 import com.nicname.iyeongjun.nanumcar.api.model.notice.NoticeModel
+import org.jetbrains.anko.AnkoLogger
+import org.jetbrains.anko.info
 
 
 class NoticeAdapter(noticeModel: NoticeModel,
-                    val context: Context) : RecyclerView.Adapter<NoticeAdapter.NoticeViewHolder>(){
+                    val context: Context) : RecyclerView.Adapter<NoticeAdapter.NoticeViewHolder>(), AnkoLogger{
     val items = noticeModel.results
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoticeViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_notice,parent,false)
@@ -26,11 +29,17 @@ class NoticeAdapter(noticeModel: NoticeModel,
         holder.apply {
             items[position].let {
                 txtNotice.text = it.notice
+                txtNoticeBrand.text = it.company
+                info { it }
+                if(it.company == "쏘카") txtNoticeBrand.setTextColor(Color.argb(255, 58, 179, 231))
+                else  txtNoticeBrand.setTextColor(Color.argb(255, 93, 193, 117))
+
             }
         }
     }
 
     inner class NoticeViewHolder(view : View) : RecyclerView.ViewHolder(view){
         val txtNotice = view.findViewById<TextView>(R.id.txtNotice)
+        val txtNoticeBrand = view.findViewById<TextView>(R.id.txtNoticeBrand)
     }
 }

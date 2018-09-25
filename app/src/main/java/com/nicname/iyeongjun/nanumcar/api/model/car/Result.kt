@@ -9,5 +9,6 @@ data class Result(
         @SerializedName("price_per_ten_minute") val pricePerTenMinute: String?,
         @SerializedName("price_per_day") val pricePerDay: String?,
         @SerializedName("price_per_km") val pricePerKm: String,
-        @SerializedName("brand") val brand: String
+        @SerializedName("brand") val brand: String,
+        @SerializedName("image") val image: String
 )

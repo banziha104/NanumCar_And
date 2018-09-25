@@ -8,5 +8,6 @@ data class Result(
         @SerializedName("information") val information: String,
         @SerializedName("date") val date: Any?,
         @SerializedName("company") val company: String,
-        @SerializedName("image") val image: String
+        @SerializedName("image") val image: String?,
+        @SerializedName("link") val link: String
 )
