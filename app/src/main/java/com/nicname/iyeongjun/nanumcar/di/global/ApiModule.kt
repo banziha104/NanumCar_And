@@ -4,9 +4,7 @@ import com.nicname.iyeongjun.dobike.const.API_URL
 import com.nicname.iyeongjun.dobike.const.SERVER_URL
 import com.nicname.iyeongjun.dobike.const.T_BASE_URL
 import com.nicname.iyeongjun.gwangju_contest.api.inter.TourApi
-import com.nicname.iyeongjun.nanumcar.api.inter.NoticeApi
-import com.nicname.iyeongjun.nanumcar.api.inter.ParkApi
-import com.nicname.iyeongjun.nanumcar.api.inter.ThemeApi
+import com.nicname.iyeongjun.nanumcar.api.inter.*
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -69,4 +67,28 @@ class ApiModule{
             .addConverterFactory(xmlConverter)
             .build()
             .create(TourApi::class.java)
+    @Provides
+    @Singleton
+    fun provideCarApi(rxAdapter: CallAdapter.Factory,
+                       @Named("gson") gsonConverter : Converter.Factory,
+                       client: OkHttpClient)
+            = Retrofit.Builder()
+            .baseUrl(SERVER_URL)
+            .client(client)
+            .addCallAdapterFactory(rxAdapter)
+            .addConverterFactory(gsonConverter)
+            .build()
+            .create(CarApi::class.java)
+    @Provides
+    @Singleton
+    fun provideBranchApi(rxAdapter: CallAdapter.Factory,
+                       @Named("gson") gsonConverter : Converter.Factory,
+                       client: OkHttpClient)
+            = Retrofit.Builder()
+            .baseUrl(SERVER_URL)
+            .client(client)
+            .addCallAdapterFactory(rxAdapter)
+            .addConverterFactory(gsonConverter)
+            .build()
+            .create(BranchApi::class.java)
 }
