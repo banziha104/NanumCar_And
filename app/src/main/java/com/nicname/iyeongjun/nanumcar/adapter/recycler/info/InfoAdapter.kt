@@ -42,7 +42,7 @@ class InfoAdapter(model : CarModel,
     override fun onBindViewHolder(holder: InfoViewHolder, position: Int) {
         holder.apply {
             items.keys.toList()[position].let {
-                txtCarType.text = it
+                txtCarType.text = "#${it}"
             }
             items.values.toList()[position].let {
                 recyclerView.adapter = InfoDetailAdapter(it,context)

@@ -1,7 +1,9 @@
 package com.nicname.iyeongjun.nanumcar.adapter.recycler.theme
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -9,8 +11,10 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.nicname.iyeongjun.nanumcar.R
 import com.nicname.iyeongjun.nanumcar.api.model.notice.NoticeModel
+import com.nicname.iyeongjun.nanumcar.api.model.notice.Result
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.info
+import org.jetbrains.anko.startActivity
 
 
 class NoticeAdapter(noticeModel: NoticeModel,
@@ -28,6 +32,7 @@ class NoticeAdapter(noticeModel: NoticeModel,
     override fun onBindViewHolder(holder: NoticeViewHolder, position: Int) {
         holder.apply {
             items[position].let {
+                item = it
                 txtNotice.text = it.notice
                 txtNoticeBrand.text = it.company
                 info { it }
@@ -39,7 +44,13 @@ class NoticeAdapter(noticeModel: NoticeModel,
     }
 
     inner class NoticeViewHolder(view : View) : RecyclerView.ViewHolder(view){
+        var item : Result? = null
         val txtNotice = view.findViewById<TextView>(R.id.txtNotice)
         val txtNoticeBrand = view.findViewById<TextView>(R.id.txtNoticeBrand)
+        init {
+            view.setOnClickListener {
+                context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(item?.link)))
+            }
+        }
     }
 }

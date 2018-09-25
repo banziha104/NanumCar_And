@@ -11,6 +11,8 @@ import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.DividerItemDecoration
+import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,26 +26,32 @@ import com.nicname.iyeongjun.dobike.const.sections
 import com.nicname.iyeongjun.gwangju_contest.extension.plusAssign
 
 import com.nicname.iyeongjun.nanumcar.R
+import com.nicname.iyeongjun.nanumcar.adapter.recycler.park.ParkSectionAdapter
 import com.nicname.iyeongjun.nanumcar.api.model.park.ParkModel
 import com.nicname.iyeongjun.nanumcar.di.fragments.modules.ParkModule
 import dagger.android.support.DaggerFragment
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.fragment_park.*
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.info
+import org.jetbrains.anko.toast
 import javax.inject.Inject
 
 class ParkFragment : DaggerFragment(), AnkoLogger, OnMapReadyCallback {
     @Inject
     lateinit var viewModelFactory: ParkViewModelFactory
     lateinit var viewModel: ParkViewModel
+
     var mapView: MapView? = null
     var model: ParkModel? = null
 
-    var locationManager : LocationManager? = null
-    var locationListener : LocationListener? = null
-    var tempLocation : Location? = null
+    var googleMap : GoogleMap? = null
 
+    var locationManager: LocationManager? = null
+    var locationListener: LocationListener? = null
+    var tempLocation: Location? = null
+    val parkSectionDriver = BehaviorSubject.create<String>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -65,10 +73,14 @@ class ParkFragment : DaggerFragment(), AnkoLogger, OnMapReadyCallback {
         return view
     }
 
+
     override fun onMapReady(map: GoogleMap?) {
         val temp = sections.items.filter { it.section == "강남구" }.first()// 강남구 주소로 초기세팅
         val location = LatLng(temp.lat.toDouble(), temp.long.toDouble())
-        map?.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 14.5f))
+
+        googleMap = map
+
+        map?.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 13.5f))
         for (i in model?.results!!) {
             try {
                 val marker = MarkerOptions()
@@ -84,6 +96,27 @@ class ParkFragment : DaggerFragment(), AnkoLogger, OnMapReadyCallback {
     override fun onResume() {
         super.onResume()
         mapView?.onResume()
+        parkSectionRecyclerview.apply {
+            adapter = ParkSectionAdapter(parkSectionDriver)
+            layoutManager = LinearLayoutManager(activity!!)
+            addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
+        }
+        parkSectionDriver
+                .subscribe({ str ->
+                    val item = sections.items.filter { it.section == str }.first()
+                    googleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(item.lat.toDouble(),item.long.toDouble()), 13.5f))
+                }, {
+                    it.printStackTrace()
+                })
+
+        btnParkMyLocation.setOnClickListener {
+            if(tempLocation != null){
+                googleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(tempLocation?.latitude!!,tempLocation?.longitude!!),13.5f))
+            }else{
+                activity!!.toast("위치정보를 얻을수 없습니다. \n GPS를 확인해주세요.")
+            }
+
+        }
     }
 
 
@@ -96,6 +129,7 @@ class ParkFragment : DaggerFragment(), AnkoLogger, OnMapReadyCallback {
         super.onLowMemory()
         mapView?.onLowMemory()
     }
+
     @SuppressLint("MissingPermission")
     fun bindGps() {
         locationManager = activity!!.getSystemService(Context.LOCATION_SERVICE) as LocationManager
@@ -106,6 +140,7 @@ class ParkFragment : DaggerFragment(), AnkoLogger, OnMapReadyCallback {
 //                    val temp = Geocoder(activity!!).getFromLocation(location?.latitude!!,location?.longitude!!,1) // 위도경도정보 받아오기
                 }
             }
+
             override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
                 info { "status : $status" }
             }

@@ -46,10 +46,13 @@ class InfoFragment : DaggerFragment(), AnkoLogger {
     }
 
     fun bind() {
+        editInfo.clearFocus()
+
         viewModel
                 .driver
                 .carDriver
                 .subscribe({
+
                     model = it
                     info { model }
                     infoRecyclerView.apply {

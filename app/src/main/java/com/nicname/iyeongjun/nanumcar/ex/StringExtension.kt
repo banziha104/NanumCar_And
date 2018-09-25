@@ -4,6 +4,11 @@ import android.util.Log
 import com.google.gson.Gson
 import org.json.XML
 
+fun String.makePrice() : String{
+    var result = this
+
+    return this
+}
 
 fun String?.toIntViaDouble() = this?.toDouble()?.toInt()
 fun String.toIntViaDouble() = this.toDouble()?.toInt()

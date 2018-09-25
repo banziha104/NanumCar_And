@@ -26,7 +26,7 @@ class ThemeAdapter(themeModel: ThemeModel ,val context : Context) : RecyclerView
     override fun onBindViewHolder(holder: ThemeViewHolder, position: Int) {
         holder.apply {
             items?.keys?.toList()!![position].let {
-                txtTitle.text = it
+                txtTitle.text = "#${it}"
             }
             items?.values?.toList()!![position].let {
                 recyclerView.adapter = ThemeDetailAdapter(it,context)

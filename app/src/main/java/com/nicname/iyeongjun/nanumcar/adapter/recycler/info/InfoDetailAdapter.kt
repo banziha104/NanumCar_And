@@ -5,7 +5,9 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
+import com.nicname.iyeongjun.nanumcar.GlideApp
 import com.nicname.iyeongjun.nanumcar.R
 import com.nicname.iyeongjun.nanumcar.api.model.car.Result
 
@@ -24,11 +26,30 @@ class InfoDetailAdapter(val list : List<Result>,val context : Context) : Recycle
         holder.apply {
             list[position].let {
                 txtName.text = it.model
+                txtCarType.text = it.brand
+                txtPrice.text = it.pricePerKm
+                GlideApp
+                        .with(context)
+                        .load(it.image)
+                        .into(img)
+
+                if(it.brand == "쏘카"){
+                    txtSubStitle.text = "하루당"
+                    txtSubPrice.text = it.pricePerDay
+                }else{
+                    txtSubStitle.text = "1분당"
+                    txtSubPrice.text =it.pricePerTenMinute
+                }
             }
         }
     }
 
     inner class InfoDetailViewHolder(view : View) : RecyclerView.ViewHolder(view){
         val txtName = view.findViewById<TextView>(R.id.txtInfoDetailName)
+        val txtCarType = view.findViewById<TextView>(R.id.txtInDeCarType)
+        val txtPrice = view.findViewById<TextView>(R.id.txtIndePrice)
+        val txtSubPrice = view.findViewById<TextView>(R.id.txtInDeSubPrice)
+        val txtSubStitle = view.findViewById<TextView>(R.id.txtInDeSubTitle)
+        val img = view.findViewById<ImageView>(R.id.imgInfoDe)
     }
 }
