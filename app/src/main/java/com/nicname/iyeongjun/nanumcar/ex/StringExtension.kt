@@ -2,12 +2,17 @@ package com.nicname.iyeongjun.gwangju_contest.extension
 
 import android.util.Log
 import com.google.gson.Gson
+import com.nicname.iyeongjun.nanumcar.R
 import org.json.XML
 
-fun String.makePrice() : String{
-    var result = this
-
-    return this
+fun String?.getPriceIcon() : Int{
+    var result = 0
+    when(this){
+        "유료" -> result = R.drawable.pin_charge
+        "무료" -> result = R.drawable.pin_free
+        "혼합" -> result = R.drawable.pin_mix
+    }
+    return result
 }
 
 fun String?.toIntViaDouble() = this?.toDouble()?.toInt()

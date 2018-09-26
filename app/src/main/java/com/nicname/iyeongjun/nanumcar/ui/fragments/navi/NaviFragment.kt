@@ -14,6 +14,7 @@ import com.jakewharton.rxbinding2.widget.textChanges
 import com.nicname.iyeongjun.gwangju_contest.extension.plusAssign
 
 import com.nicname.iyeongjun.nanumcar.R
+import com.nicname.iyeongjun.nanumcar.R.id.*
 import com.nicname.iyeongjun.nanumcar.adapter.recycler.navi.NaviAdapter
 import com.nicname.iyeongjun.nanumcar.util.TMapUtils
 import com.skt.Tmap.TMapData
@@ -50,6 +51,7 @@ class NaviFragment : DaggerFragment() , AnkoLogger{
                 }
             }
         }
+
         editNavi
                 .textChanges()
                 .subscribe({
