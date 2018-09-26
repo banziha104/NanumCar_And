@@ -4,12 +4,15 @@ import android.annotation.SuppressLint
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.location.Geocoder
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
@@ -20,15 +23,20 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.nicname.iyeongjun.dobike.const.sections
+import com.nicname.iyeongjun.gwangju_contest.extension.getPriceIcon
 import com.nicname.iyeongjun.gwangju_contest.extension.plusAssign
 
 import com.nicname.iyeongjun.nanumcar.R
 import com.nicname.iyeongjun.nanumcar.adapter.recycler.park.ParkSectionAdapter
 import com.nicname.iyeongjun.nanumcar.api.model.park.ParkModel
 import com.nicname.iyeongjun.nanumcar.di.fragments.modules.ParkModule
+import com.nicname.iyeongjun.nanumcar.ui.dialogs.ParkDialog
+import com.nicname.iyeongjun.nanumcar.ui.dialogs.TourDialog
 import dagger.android.support.DaggerFragment
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.subjects.BehaviorSubject
@@ -38,7 +46,7 @@ import org.jetbrains.anko.info
 import org.jetbrains.anko.toast
 import javax.inject.Inject
 
-class ParkFragment : DaggerFragment(), AnkoLogger, OnMapReadyCallback {
+class ParkFragment : DaggerFragment(), AnkoLogger, OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener {
     @Inject
     lateinit var viewModelFactory: ParkViewModelFactory
     lateinit var viewModel: ParkViewModel
@@ -52,11 +60,13 @@ class ParkFragment : DaggerFragment(), AnkoLogger, OnMapReadyCallback {
     var locationListener: LocationListener? = null
     var tempLocation: Location? = null
     val parkSectionDriver = BehaviorSubject.create<String>()
+    var fragmentView : View? = null
+    var flag = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_park, container, false)
-
+        fragmentView = view
         viewModel = ViewModelProviders.of(this, viewModelFactory)[ParkViewModel::class.java]
         bindGps()
         viewModel
@@ -73,6 +83,20 @@ class ParkFragment : DaggerFragment(), AnkoLogger, OnMapReadyCallback {
         return view
     }
 
+    override fun onMarkerClick(p0: Marker?): Boolean {
+        if(!flag){
+            flag = !flag
+            Snackbar.make(fragmentView!!,"마커 위 정보창을 누르면 상세 페이지로 이동합니다",Snackbar.LENGTH_SHORT).show()
+        }
+        return false
+    }
+
+    override fun onInfoWindowClick(marker: Marker?) {
+        val temp = model?.results?.filter { it?.title == marker?.title }?.first()
+        val dialog = ParkDialog(activity!!,temp!!)
+        dialog!!.window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog!!.show()
+    }
 
     override fun onMapReady(map: GoogleMap?) {
         val temp = sections.items.filter { it.section == "강남구" }.first()// 강남구 주소로 초기세팅
@@ -80,12 +104,17 @@ class ParkFragment : DaggerFragment(), AnkoLogger, OnMapReadyCallback {
 
         googleMap = map
 
+        map?.setOnMarkerClickListener(this)
+        map?.setOnInfoWindowClickListener(this)
+
         map?.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 13.5f))
         for (i in model?.results!!) {
             try {
                 val marker = MarkerOptions()
                         .position(LatLng(i?.lat!!, i?.lon!!))
                         .title(i.title)
+                        .snippet(i.locationJibun)
+                        .icon(BitmapDescriptorFactory.fromResource(i.priceType.getPriceIcon()))
                 map?.addMarker(marker)
             } catch (e: Exception) {
                 e.printStackTrace()
