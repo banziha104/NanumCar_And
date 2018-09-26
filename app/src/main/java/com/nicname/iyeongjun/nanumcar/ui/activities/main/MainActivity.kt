@@ -7,10 +7,13 @@ import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.system.Os.bind
+import com.nicname.iyeongjun.dobike.const.T_MAP_KEY
 import com.nicname.iyeongjun.gwangju_contest.extension.plusAssign
 import com.nicname.iyeongjun.gwangju_contest.rx.AutoClearedDisposable
 import com.nicname.iyeongjun.nanumcar.R
 import com.nicname.iyeongjun.nanumcar.adapter.pager.MainPagerAdapter
+import com.nicname.iyeongjun.nanumcar.util.TMapUtils
+import com.skt.Tmap.TMapTapi
 import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
@@ -28,6 +31,7 @@ class MainActivity : DaggerAppCompatActivity() {
         setContentView(R.layout.activity_main)
         lifecycle += viewDisposables
         viewModel = ViewModelProviders.of(this, viewModelFactory)[MainViewModel::class.java]
+        setTmap()
         bindViewPager(viewModel.fragements)
     }
 
@@ -51,4 +55,7 @@ class MainActivity : DaggerAppCompatActivity() {
         })
     }
 
+    private fun setTmap(){
+        TMapUtils.setTmap(this)
+    }
 }

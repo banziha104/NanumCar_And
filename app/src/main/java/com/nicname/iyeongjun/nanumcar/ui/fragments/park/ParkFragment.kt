@@ -10,6 +10,7 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
@@ -21,6 +22,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.nicname.iyeongjun.dobike.const.sections
 import com.nicname.iyeongjun.gwangju_contest.extension.plusAssign
@@ -38,7 +40,7 @@ import org.jetbrains.anko.info
 import org.jetbrains.anko.toast
 import javax.inject.Inject
 
-class ParkFragment : DaggerFragment(), AnkoLogger, OnMapReadyCallback {
+class ParkFragment : DaggerFragment(), AnkoLogger, OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
     @Inject
     lateinit var viewModelFactory: ParkViewModelFactory
     lateinit var viewModel: ParkViewModel
@@ -52,11 +54,10 @@ class ParkFragment : DaggerFragment(), AnkoLogger, OnMapReadyCallback {
     var locationListener: LocationListener? = null
     var tempLocation: Location? = null
     val parkSectionDriver = BehaviorSubject.create<String>()
-
+    var fragmentView : View? = null
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_park, container, false)
-
         viewModel = ViewModelProviders.of(this, viewModelFactory)[ParkViewModel::class.java]
         bindGps()
         viewModel
@@ -73,12 +74,17 @@ class ParkFragment : DaggerFragment(), AnkoLogger, OnMapReadyCallback {
         return view
     }
 
+    override fun onMarkerClick(p0: Marker?): Boolean {
+        Snackbar.make(fragmentView!!,"마커 위 정보창을 누르면 상세 페이지로 이동합니다",Snackbar.LENGTH_SHORT).show()
+        return true
+    }
 
     override fun onMapReady(map: GoogleMap?) {
         val temp = sections.items.filter { it.section == "강남구" }.first()// 강남구 주소로 초기세팅
         val location = LatLng(temp.lat.toDouble(), temp.long.toDouble())
 
         googleMap = map
+        map?.setOnMarkerClickListener(this)
 
         map?.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 13.5f))
         for (i in model?.results!!) {
@@ -86,6 +92,8 @@ class ParkFragment : DaggerFragment(), AnkoLogger, OnMapReadyCallback {
                 val marker = MarkerOptions()
                         .position(LatLng(i?.lat!!, i?.lon!!))
                         .title(i.title)
+                        .snippet(i.locationJibun)
+
                 map?.addMarker(marker)
             } catch (e: Exception) {
                 e.printStackTrace()
