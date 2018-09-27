@@ -12,7 +12,9 @@ import com.bumptech.glide.Glide
 import com.nicname.iyeongjun.nanumcar.GlideApp
 import com.nicname.iyeongjun.nanumcar.R
 import com.nicname.iyeongjun.nanumcar.api.model.theme.Result
+import com.nicname.iyeongjun.nanumcar.ui.activities.detail.DetailActivity
 import org.jetbrains.anko.find
+import org.jetbrains.anko.startActivity
 import org.w3c.dom.Text
 
 
@@ -29,6 +31,7 @@ class ThemeDetailAdapter(val list: List<Result?>, val context: Context) : Recycl
     override fun onBindViewHolder(holder: ThemeDetailViewHolder, position: Int) {
         holder.apply {
             list[position]!!.let {
+                item = it
                 title.text = it.dcName
                 subscription.text = it.location
                 GlideApp
@@ -43,9 +46,14 @@ class ThemeDetailAdapter(val list: List<Result?>, val context: Context) : Recycl
         val title = view.findViewById<TextView>(R.id.txtThDeTitle)
         val subscription = view.findViewById<TextView>(R.id.txtThDeSubscription)
         val img = view.findViewById<ImageView>(R.id.imgThDe)
-
+        var item : Result? = null
         init {
             img.setColorFilter(Color.argb(100, 0, 0, 0))
+            view.setOnClickListener {
+                context.startActivity<DetailActivity>(
+                        "name" to item?.number
+                )
+            }
         }
     }
 }

@@ -77,6 +77,8 @@ class NaviFragment : DaggerFragment() , AnkoLogger{
                 activity!!.toast("찾으시는 지점이 없거나, 잘못 입력하셨습니다.")
             }
         }
+
+
     }
 
 }

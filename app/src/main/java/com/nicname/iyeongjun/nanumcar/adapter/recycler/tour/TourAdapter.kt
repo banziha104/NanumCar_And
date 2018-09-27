@@ -37,7 +37,7 @@ class TourAdapter(tourModel: TourModel2, val context : Activity) : RecyclerView.
 
                 txtTitle.text = it.title
                 txtLocation.text = it.tel ?: "전화번호 없음"
-                txtType.text = it.addr1
+                txtType.text = it.addr1 ?: "제공주소 없음"
 
                 val a : String? = null
 

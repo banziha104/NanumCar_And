@@ -1,7 +1,9 @@
 package com.nicname.iyeongjun.nanumcar.ui.activities.main
 
+import android.annotation.SuppressLint
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Context
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.TabLayout
@@ -20,12 +22,19 @@ import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 import android.graphics.PorterDuff
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
 import android.support.v4.content.ContextCompat
+import org.jetbrains.anko.info
 
 
+var tempLocation: Location? = null
 
 class MainActivity : DaggerAppCompatActivity() {
 
+    var locationManager: LocationManager? = null
+    var locationListener: LocationListener? = null
     @Inject
     lateinit var viewModelFactory: MainViewModelFactory
     lateinit var viewModel : MainViewModel
@@ -45,6 +54,7 @@ class MainActivity : DaggerAppCompatActivity() {
         lifecycle += viewDisposables
         viewModel = ViewModelProviders.of(this, viewModelFactory)[MainViewModel::class.java]
         setTmap()
+        bindGps()
         bindViewPager(viewModel.fragements)
     }
 
@@ -73,5 +83,27 @@ class MainActivity : DaggerAppCompatActivity() {
     override fun onBackPressed() {}
     private fun setTmap(){
         TMapUtils.setTmap(this)
+    }
+
+    @SuppressLint("MissingPermission")
+    fun bindGps() {
+        locationManager = this.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        locationListener = object : LocationListener {
+            override fun onLocationChanged(location: Location?) {
+                location.let {
+                    tempLocation = it
+                }
+            }
+
+            override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
+            }
+
+            override fun onProviderEnabled(provider: String?) {}
+
+            override fun onProviderDisabled(provider: String?) {}
+        }
+
+        locationManager?.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1.0f, locationListener!!)
+        locationManager?.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 1.0f, locationListener!!)
     }
 }
