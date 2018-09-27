@@ -1,7 +1,10 @@
 package com.nicname.iyeongjun.nanumcar.di.activities
 
+import android.app.Activity
+import com.nicname.iyeongjun.nanumcar.di.activities.modules.DetailModule
 import com.nicname.iyeongjun.nanumcar.di.activities.modules.MainModule
 import com.nicname.iyeongjun.nanumcar.di.activities.modules.SplashModule
+import com.nicname.iyeongjun.nanumcar.ui.activities.detail.DetailActivity
 import com.nicname.iyeongjun.nanumcar.ui.activities.main.MainActivity
 import com.nicname.iyeongjun.nanumcar.ui.activities.splash.SplashActivity
 import dagger.Module
@@ -17,4 +20,7 @@ abstract class ActivityBinder{
 
     @ContributesAndroidInjector(modules = arrayOf(SplashModule::class))
     abstract fun bindSplashModule() : SplashActivity
+
+    @ContributesAndroidInjector(modules = arrayOf(DetailModule::class))
+    abstract fun bindDetailModule() : DetailActivity
 }
