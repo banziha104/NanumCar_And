@@ -18,6 +18,7 @@ import com.jiwoo.choi.nanumcar.api.model.theme.ThemeModel
 import com.jiwoo.choi.nanumcar.ui.activities.main.MainActivity
 import dagger.android.support.DaggerAppCompatActivity
 import io.reactivex.rxkotlin.Observables
+import kotlinx.android.synthetic.main.activity_splash.*
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.info
 import org.jetbrains.anko.startActivity
@@ -34,10 +35,20 @@ class SplashActivity : DaggerAppCompatActivity() , PermissionController.CallBack
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
+
         PermissionController(this, arrayOf(
                 Manifest.permission.INTERNET,
                 Manifest.permission.ACCESS_FINE_LOCATION
         )).checkVersion()
+//        splashView.setAnimation("esplash.json")
+//        splashView.playAnimation()
+//        splashView.loop(true)
+//        splashView.apply {
+//            enableMergePathsForKitKatAndAbove(true)
+//            loop(true)
+//            setAnimation("esplash.json")
+//        }
+
     }
 
     override fun init() {
@@ -61,7 +72,8 @@ class SplashActivity : DaggerAppCompatActivity() , PermissionController.CallBack
                 carDriver.onNext(it[3] as CarModel)
                 branchDriver.onNext(it[4] as BranchModel)
             }
-            startActivity<MainActivity>()
+//            startActivity<MainActivity>()
+//            finish()
         },{
             it.printStackTrace()
         })
