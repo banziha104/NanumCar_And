@@ -15,6 +15,8 @@ fun String?.getPriceIcon() : Int{
     return result
 }
 
+
+
 fun String?.toIntViaDouble() = this?.toDouble()?.toInt()
 fun String.toIntViaDouble() = this.toDouble()?.toInt()
 

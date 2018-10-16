@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
@@ -26,7 +27,6 @@ import org.jetbrains.anko.toast
 import javax.inject.Inject
 
 class NaviFragment : DaggerFragment() , AnkoLogger{
-
     @Inject
     lateinit var viewModelFactory: NaviViewModelFactory
     lateinit var viewModel: NaviViewModel
@@ -77,8 +77,5 @@ class NaviFragment : DaggerFragment() , AnkoLogger{
                 activity!!.toast("찾으시는 지점이 없거나, 잘못 입력하셨습니다.")
             }
         }
-
-
     }
-
 }

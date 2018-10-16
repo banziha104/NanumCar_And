@@ -2,6 +2,7 @@ package com.jiwoo.choi.nanumcar.ui.activities.nanum
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import com.jiwoo.choi.nanumcar.R
 
 class NanumActivity : AppCompatActivity() {
 

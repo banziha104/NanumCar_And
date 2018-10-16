@@ -59,9 +59,13 @@ class MainActivity : DaggerAppCompatActivity() {
     }
 
     private fun bindViewPager(list : List<Fragment>) {
+
         mainViewpager.adapter = MainPagerAdapter(supportFragmentManager, list)
+
         for (i in 0..4) tab.addTab(tab.newTab().setText(tabNames[i]).setIcon(tabIcons[i]))
+
         mainViewpager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tab))
+
         tab.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(mainViewpager))
         tab.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
