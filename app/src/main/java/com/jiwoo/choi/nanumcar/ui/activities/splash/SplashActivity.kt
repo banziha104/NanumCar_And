@@ -4,6 +4,7 @@ import android.Manifest
 import android.arch.lifecycle.ViewModelProviders
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.widget.Toast
 import com.google.gson.Gson
 import com.jiwoo.choi.dobike.util.PermissionController
@@ -26,6 +27,7 @@ import javax.inject.Inject
 
 class SplashActivity : DaggerAppCompatActivity() , PermissionController.CallBack,AnkoLogger {
 
+    val hd = Handler()
     @Inject
     lateinit var viewModelFactory: SplashViewModelFactory
     lateinit var viewModel : SplashViewModel
@@ -72,8 +74,10 @@ class SplashActivity : DaggerAppCompatActivity() , PermissionController.CallBack
                 carDriver.onNext(it[3] as CarModel)
                 branchDriver.onNext(it[4] as BranchModel)
             }
-//            startActivity<MainActivity>()
-//            finish()
+            hd.postDelayed({
+                startActivity<MainActivity>()
+                finish()
+            },3000)
         },{
             it.printStackTrace()
         })

@@ -19,7 +19,9 @@ import org.jetbrains.anko.startActivity
 
 class NoticeAdapter(noticeModel: NoticeModel,
                     val context: Context) : RecyclerView.Adapter<NoticeAdapter.NoticeViewHolder>(), AnkoLogger{
+
     val items = noticeModel.results
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoticeViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_notice,parent,false)
         return NoticeViewHolder(view)
